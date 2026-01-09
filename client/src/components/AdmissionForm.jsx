@@ -62,7 +62,7 @@ const AdmissionForm = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/admissions', formData);
+            const response = await axios.post('/api/admissions', formData);
 
             setSubmitMessage('🎉 Application submitted successfully! We will contact you soon via email and WhatsApp.');
             setMessageType('success');
