@@ -1,13 +1,20 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
+
+let isConnected = false;
 
 const connectDB = async () => {
+    if (isConnected) {
+        console.log('=> Using existing database connection');
+        return;
+    }
+
     try {
-        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/nooraynacademy');
+        const db = await mongoose.connect(process.env.MONGODB_URI);
+        isConnected = db.connections[0].readyState;
         console.log('✅ MongoDB Connected Successfully');
     } catch (error) {
         console.error('❌ MongoDB Connection Error:', error.message);
-        process.exit(1);
+        throw error; // Let the caller handle it
     }
 };
 
