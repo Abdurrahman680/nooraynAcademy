@@ -83,9 +83,10 @@ const AdmissionForm = () => {
                 selectedCourses: [],
             });
         } catch (error) {
-            setSubmitMessage('❌ Error submitting application. Please try again or contact us directly.');
+            console.error('Error submitting admission:', error);
+            const errorMessage = error.response?.data?.message || error.message || 'Please try again or contact us directly.';
+            setSubmitMessage(`❌ Error: ${errorMessage}`);
             setMessageType('error');
-            console.error('Error:', error);
         } finally {
             setIsSubmitting(false);
         }
