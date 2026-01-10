@@ -3,6 +3,8 @@ import connectDB from '@/lib/mongodb';
 import Admission from '@/models/Admission';
 import nodemailer from 'nodemailer';
 
+export const dynamic = 'force-dynamic';
+
 // Helper to create email transporter
 const createTransporter = () => {
     return nodemailer.createTransport({
@@ -97,8 +99,7 @@ export async function POST(req) {
         console.error('Error in POST /api/admissions:', error);
         return NextResponse.json({
             success: false,
-            message: 'Internal Server Error',
-            error: error.message,
+            message: error.message || 'Internal Server Error',
         }, { status: 500 });
     }
 }
