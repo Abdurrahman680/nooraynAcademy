@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import Teachers from './components/Teachers';
+import ZoomClasses from './components/ZoomClasses';
 import Courses from './components/Courses';
 import Fees from './components/Fees';
 import AdmissionForm from './components/AdmissionForm';
@@ -15,6 +16,7 @@ function App() {
       <Navbar />
       <Hero />
       <About />
+      <ZoomClasses />
       <Teachers />
       <Courses />
       <Fees />

@@ -24,13 +24,13 @@ const Teachers = () => {
             specialization: 'Nazra & Hifz e Quran',
         },
         {
-            name: 'Maulana Zain-ul-Abideen',
-            education: 'BA, 8-year Aalim course from Dar-ul-Uloom Islamia, Hafiz-e-Quran',
+            name: 'Sheikh Zain ul Abedine',
+            education: 'Asshahdat ul Alamia (Institute of Islamic Sciences, Islamabad, Pakistan), MA (Islamic Sciences), Punjab University',
             experience: '4 years of online Quran teaching',
-            institute: 'Dar-ul-Uloom Islamia',
-            achievement: 'Certified Islamic Scholar',
+            institute: 'Noorayn Academy',
+            achievement: 'Director, Noorayn Academy',
             photo: '👨‍🎓',
-            specialization: 'Tafseer & Fiqh',
+            specialization: 'Director & Senior Teacher',
         },
     ];
 
