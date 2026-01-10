@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const admissionSchema = new mongoose.Schema({
     studentFirstName: {
@@ -55,12 +55,6 @@ const admissionSchema = new mongoose.Schema({
     selectedCourses: {
         type: [String],
         required: true,
-        validate: {
-            validator: function (v) {
-                return v && v.length > 0;
-            },
-            message: 'At least one course must be selected',
-        },
     },
     submittedAt: {
         type: Date,
@@ -73,4 +67,4 @@ const admissionSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('Admission', admissionSchema, 'noorayns');
+export default mongoose.models.Admission || mongoose.model('Admission', admissionSchema, 'noorayns');

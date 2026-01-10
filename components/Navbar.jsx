@@ -1,4 +1,5 @@
-import { useState } from 'react';
+'use client';
+import { useState, useEffect } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
 const Navbar = () => {

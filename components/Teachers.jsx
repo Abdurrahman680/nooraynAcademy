@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 import { FaTimes, FaGraduationCap, FaBriefcase, FaAward } from 'react-icons/fa';
 

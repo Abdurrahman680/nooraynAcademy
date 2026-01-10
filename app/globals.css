@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  @theme {
+    --font-sans: var(--font-inter), "system-ui", "sans-serif";
+    --font-arabic: var(--font-amiri), "serif";
+
+    --color-primary-50: #f0fdf4;
+    --color-primary-100: #dcfce7;
+    --color-primary-200: #bbf7d0;
+    --color-primary-300: #86efac;
+    --color-primary-400: #4ade80;
+    --color-primary-500: #10b981;
+    --color-primary-600: #059669;
+    --color-primary-700: #047857;
+    --color-primary-800: #065f46;
+    --color-primary-900: #064e3b;
+
+    --color-gold-50: #fefce8;
+    --color-gold-100: #fef9c3;
+    --color-gold-200: #fef08a;
+    --color-gold-300: #fde047;
+    --color-gold-400: #facc15;
+    --color-gold-500: #eab308;
+    --color-gold-600: #ca8a04;
+    --color-gold-700: #a16207;
+    --color-gold-800: #854d0e;
+    --color-gold-900: #713f12;
+
+    --color-islamic-teal: #0d9488;
+    --color-islamic-cream: #faf8f3;
+    --color-islamic-darkGreen: #064e3b;
+
+    --animate-fade-in: fadeIn 0.5s ease-in;
+    --animate-slide-up: slideUp 0.5s ease-out;
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  }
+
+  @layer base {
+    body {
+      @apply bg-islamic-cream text-gray-900 font-sans;
+    }
+  }
+
+  @layer components {
+    .btn-primary {
+      @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg;
+    }
+
+    .btn-secondary {
+      @apply bg-gold-500 hover:bg-gold-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg;
+    }
+
+    .section-title {
+      @apply text-3xl md:text-4xl font-bold text-primary-800 mb-6 text-center;
+    }
+
+    .card {
+      @apply bg-white rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl;
+    }
+  }
