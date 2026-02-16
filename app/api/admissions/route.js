@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import Admission from '@/models/Admission';
 import nodemailer from 'nodemailer';
+import { Pool } from 'pg';
 
 export const dynamic = 'force-dynamic';
 
-// Helper to create email transporter
+const pool = new Pool({
+    connectionString: process.env.NEON_DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
+});
+
 const createTransporter = () => {
     return nodemailer.createTransport({
         service: 'gmail',
@@ -18,10 +21,8 @@ const createTransporter = () => {
 
 export async function POST(req) {
     try {
-        await connectDB();
         const admissionData = await req.json();
 
-        // Validate required fields
         if (!admissionData.selectedCourses || admissionData.selectedCourses.length === 0) {
             return NextResponse.json({
                 success: false,
@@ -29,16 +30,86 @@ export async function POST(req) {
             }, { status: 400 });
         }
 
-        // Create new admission record
-        const admission = new Admission(admissionData);
-        await admission.save();
+        if (!process.env.NEON_DATABASE_URL) {
+            throw new Error('NEON_DATABASE_URL environment variable is not configured');
+        }
 
-        // Send email notification (Optional)
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS admissions (
+                id SERIAL PRIMARY KEY,
+                student_first_name TEXT NOT NULL,
+                student_last_name TEXT NOT NULL,
+                email TEXT NOT NULL,
+                contact_number TEXT NOT NULL,
+                date_of_birth DATE NOT NULL,
+                education TEXT NOT NULL,
+                nationality TEXT NOT NULL,
+                language TEXT NOT NULL,
+                guardian_name TEXT NOT NULL,
+                guardian_contact_number TEXT NOT NULL,
+                whatsapp_number TEXT NOT NULL,
+                selected_courses TEXT[] NOT NULL,
+                submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                status TEXT NOT NULL DEFAULT 'pending'
+            )
+        `);
+
+        const insertResult = await pool.query(
+            `
+            INSERT INTO admissions (
+                student_first_name,
+                student_last_name,
+                email,
+                contact_number,
+                date_of_birth,
+                education,
+                nationality,
+                language,
+                guardian_name,
+                guardian_contact_number,
+                whatsapp_number,
+                selected_courses,
+                status
+            ) VALUES (
+                $1,
+                $2,
+                $3,
+                $4,
+                $5,
+                $6,
+                $7,
+                $8,
+                $9,
+                $10,
+                $11,
+                $12,
+                $13
+            )
+            RETURNING *
+        `,
+            [
+                admissionData.studentFirstName,
+                admissionData.studentLastName,
+                admissionData.email,
+                admissionData.contactNumber,
+                admissionData.dateOfBirth,
+                admissionData.education,
+                admissionData.nationality,
+                admissionData.language,
+                admissionData.guardianName,
+                admissionData.guardianContactNumber,
+                admissionData.whatsappNumber,
+                admissionData.selectedCourses,
+                'pending',
+            ]
+        );
+
+        const admission = insertResult.rows[0];
+
         if (process.env.EMAIL_PASSWORD && process.env.EMAIL_USER) {
             try {
                 const transporter = createTransporter();
 
-                // Email to student/guardian
                 const studentEmailOptions = {
                     from: process.env.EMAIL_USER,
                     to: admissionData.email,
@@ -67,7 +138,6 @@ export async function POST(req) {
               `,
                 };
 
-                // Email to admin
                 const adminEmailOptions = {
                     from: process.env.EMAIL_USER,
                     to: admissionData.adminEmail || process.env.ADMIN_EMAIL,
@@ -106,12 +176,18 @@ export async function POST(req) {
 
 export async function GET() {
     try {
-        await connectDB();
-        const admissions = await Admission.find().sort({ submittedAt: -1 });
+        if (!process.env.NEON_DATABASE_URL) {
+            throw new Error('NEON_DATABASE_URL environment variable is not configured');
+        }
+
+        const result = await pool.query(
+            'SELECT * FROM admissions ORDER BY submitted_at DESC'
+        );
+
         return NextResponse.json({
             success: true,
-            count: admissions.length,
-            data: admissions,
+            count: result.rowCount,
+            data: result.rows,
         }, { status: 200 });
     } catch (error) {
         console.error('Error in GET /api/admissions:', error);
