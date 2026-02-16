@@ -1,13 +1,8 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { Pool } from 'pg';
+import { getPool } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
-
-const pool = new Pool({
-    connectionString: process.env.NEON_DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-});
 
 const createTransporter = () => {
     return nodemailer.createTransport({
@@ -34,7 +29,7 @@ export async function POST(req) {
             throw new Error('NEON_DATABASE_URL environment variable is not configured');
         }
 
-        await pool.query(`
+        await getPool().query(`
             CREATE TABLE IF NOT EXISTS admissions (
                 id SERIAL PRIMARY KEY,
                 student_first_name TEXT NOT NULL,
@@ -54,7 +49,7 @@ export async function POST(req) {
             )
         `);
 
-        const insertResult = await pool.query(
+        const insertResult = await getPool().query(
             `
             INSERT INTO admissions (
                 student_first_name,
@@ -180,7 +175,7 @@ export async function GET() {
             throw new Error('NEON_DATABASE_URL environment variable is not configured');
         }
 
-        const result = await pool.query(
+        const result = await getPool().query(
             'SELECT * FROM admissions ORDER BY submitted_at DESC'
         );
 
