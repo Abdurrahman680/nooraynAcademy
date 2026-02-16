@@ -23,7 +23,6 @@
     "react-icons": "^5.5.0"
   },
   "devDependencies": {
-    "@next/swc-win32-x64-msvc": "16.1.1",
     "@tailwindcss/postcss": "4.0.0-beta.8",
     "autoprefixer": "^10.4.23",
     "eslint": "^9",
